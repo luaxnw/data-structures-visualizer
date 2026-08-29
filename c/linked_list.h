@@ -28,5 +28,13 @@ ListNode *searchNode(LinkedList *linkedList, int n);
 
 void freeLinkedList(LinkedList *linkedList);
 
+// PRINT FUNCTION
+
+void printLinkedList(LinkedList *linkedList);
+
+// LINKED LIST T0 JSON FUNCTION
+
+char *linkedListToJson(const LinkedList *list);
+
 
 #endif
