@@ -139,7 +139,7 @@ void freeLinkedList(LinkedList *linkedList)
     {
         aux = linkedList->head;
         linkedList->head = aux->next;
-        free(aux);   
+        free(aux);
     }
 
     free(linkedList);
@@ -175,8 +175,7 @@ char *linkedListToJson(const LinkedList *list)
     length += snprintf(
         json + length,
         capacity - length,
-        "{\"type\":\"linked_list\",\"values\":["
-    );
+        "{\"type\":\"linked_list\",\"values\":[");
 
     ListNode *current = list->head;
 
@@ -188,8 +187,7 @@ char *linkedListToJson(const LinkedList *list)
             buffer,
             sizeof(buffer),
             "%d",
-            current->n
-        );
+            current->n);
 
         if (length + written + 3 >= capacity)
         {
@@ -241,3 +239,30 @@ char *linkedListToJson(const LinkedList *list)
     return json;
 }
 
+int saveJSON(const char *archive, const LinkedList *linkedList)
+{
+    if (archive == NULL || linkedList == NULL)
+    {
+        return 0;
+    }
+
+    char *jsonContent = linkedListToJson(linkedList);
+    if (jsonContent == NULL)
+    {
+        return 0;
+    }
+
+    FILE *arq = fopen(archive, "w");
+    if (arq == NULL)
+    {
+        free(jsonContent);
+        return 0;
+    }
+
+    fprintf(arq, "%s\n", jsonContent);
+
+    fclose(arq);
+    free(jsonContent);
+
+    return 1;
+}

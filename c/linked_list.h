@@ -36,5 +36,8 @@ void printLinkedList(LinkedList *linkedList);
 
 char *linkedListToJson(const LinkedList *list);
 
+int saveJSON(const char *archive, const LinkedList *linkedList);
+
+
 
 #endif

@@ -18,7 +18,7 @@ int main()
     removeNodeList(list, 10);
 
 
-    printf("%s", linkedListToJson(list));
+    saveJSON("list_event.json",list);
 
     return 0;
 }
