@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../src/css/style.css">
+    <title>Data Structures Visualizer</title>
+</head>
+
+<body>
+    <div class="terminal-container">
+
+        <div class="header">
+            DATA STRUCTURES VISUALIZER
+        </div>
+
+
+        <div class="visualizer-area" id="list-display">
+
+        </div>
+
+
+        <div class="controls-area">
+            <div class="input-group">
+                Valor: [ <input type="number" id="value-input" value="50" min="1" max="99"> ]
+            </div>
+            <div class="actions">
+                <button class="btn" onclick="insertItem()">[ Insert ]</button>
+                <button class="btn" onclick="removeItem()">[ Remove ]</button>
+                <button class="btn" onclick="searchItem()">[ Search ]</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../src/main.js" defer></script>
+
+</body>
+
+</html>
