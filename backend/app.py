@@ -14,26 +14,51 @@ def get_list():
 
 @app.route("/list/insert", methods=["POST"])
 def insert_element():
-    data = request.json
-    new_value = {
-        "value": data.get("value")
-    }
+    try:
+        data = request.json
+
+        if not isinstance(data.get("value"), (int, float)):
+            raise TypeError("List elements must be integer or float")
     
-    values.append(data.get("value"))
-    return jsonify({
-        "message": "element insert",
-        "info": data
-        }), 201
+        values.append(data.get("value"))
+
+        return jsonify({
+            "message": "element insert",
+            "info": data
+            }), 201
     
-@app.route("/list/remove", methods=["POST"])
+    except TypeError as e:
+        return jsonify({
+            "message": str(e)
+        })
+
+    
+@app.route("/list/remove", methods=["DELETE"])
 def remove_element():
-    data = request.json
+    try:
+
+        if not values:
+            raise IndexError("List is empty")
+
+        data = request.json
+        values.remove(data.get("value"))
+
+        return jsonify({
+            "message": "element removed",
+            "info": data
+        }), 200
+
+    except ValueError:
+        return jsonify({
+            "message": f"element {data.get("value")} not found"
+        }), 400
+    except IndexError as e:
+        return jsonify({
+            "message": str(e)
+        }), 400
     
-    values.pop(data.get("value"))
-    return jsonify({
-        "message": "element removed",
-        "info": data
-    }), 201
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
