@@ -1,4 +1,8 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include "linked_list.h"
+
+static LinkedList *linkedList = NULL;
 
 struct ListNode
 {
@@ -12,6 +16,11 @@ struct LinkedList
     ListNode *head;
     ListNode *tail;
 };
+
+void initList(void)
+{
+    linkedList = createList();
+}
 
 // CREATE FUNCTIONS
 
@@ -46,45 +55,50 @@ LinkedList *createList()
 
 // INSERT FUNCTIONS
 
-void insertAtInit(LinkedList *linkedList, int n)
+void insertAtInit(int n)
 {
     ListNode *new = createNode(n);
     if (new == NULL)
-        return NULL;
+        return;
 
     if (linkedList->head == NULL)
     {
         linkedList->head = new;
         linkedList->tail = new;
+        saveJSON("/c/data/list.json");
+
         return;
     }
 
     new->next = linkedList->head;
     linkedList->head->prev = new;
     linkedList->head = new;
+    saveJSON("/c/data/list.json");
 }
 
-void insertAtEnd(LinkedList *linkedList, int n)
+void insertAtEnd(int n)
 {
     ListNode *new = createNode(n);
     if (new == NULL)
-        return NULL;
+        return;
 
     if (linkedList->head == NULL)
     {
         linkedList->head = new;
         linkedList->tail = new;
+        saveJSON("data/list.json");
         return;
     }
 
     new->prev = linkedList->tail;
     linkedList->tail->next = new;
     linkedList->tail = new;
+    saveJSON("data/list.json");
 }
 
 // REMOVE FUNCTION
 
-void removeNodeList(LinkedList *linkedList, int n)
+void removeNodeList(int n)
 {
     ListNode *aux = linkedList->head;
     ListNode *prev = NULL;
@@ -103,6 +117,8 @@ void removeNodeList(LinkedList *linkedList, int n)
             }
 
             free(aux);
+            saveJSON("data/list.json");
+
             return;
         }
 
@@ -115,7 +131,7 @@ void removeNodeList(LinkedList *linkedList, int n)
 
 // SEARCH FUNCTION
 
-ListNode *searchNode(LinkedList *linkedList, int n)
+ListNode *searchNode(int n)
 {
     ListNode *aux = NULL;
 
@@ -131,7 +147,7 @@ ListNode *searchNode(LinkedList *linkedList, int n)
 
 // FREE FUNCTION
 
-void freeLinkedList(LinkedList *linkedList)
+void freeLinkedList()
 {
     ListNode *aux = NULL;
 
@@ -147,7 +163,7 @@ void freeLinkedList(LinkedList *linkedList)
 
 // PRINT FUNCTION
 
-void printLinkedList(LinkedList *linkedList)
+void printLinkedList()
 {
     ListNode *aux = NULL;
 
@@ -158,11 +174,7 @@ void printLinkedList(LinkedList *linkedList)
     printf("\n");
 }
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "linked_list.h"
-
-char *linkedListToJson(const LinkedList *list)
+char *linkedListToJson()
 {
     size_t capacity = 128;
     size_t length = 0;
@@ -177,7 +189,7 @@ char *linkedListToJson(const LinkedList *list)
         capacity - length,
         "{\"type\":\"linked_list\",\"values\":[");
 
-    ListNode *current = list->head;
+    ListNode *current = linkedList->head;
 
     while (current != NULL)
     {
@@ -204,7 +216,7 @@ char *linkedListToJson(const LinkedList *list)
             json = new_json;
         }
 
-        if (current != list->head)
+        if (current != linkedList->head)
         {
             json[length++] = ',';
         }
@@ -239,14 +251,14 @@ char *linkedListToJson(const LinkedList *list)
     return json;
 }
 
-int saveJSON(const char *archive, const LinkedList *linkedList)
+int saveJSON(const char *archive)
 {
     if (archive == NULL || linkedList == NULL)
     {
         return 0;
     }
 
-    char *jsonContent = linkedListToJson(linkedList);
+    char *jsonContent = linkedListToJson();
     if (jsonContent == NULL)
     {
         return 0;

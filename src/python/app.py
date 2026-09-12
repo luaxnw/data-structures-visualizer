@@ -1,4 +1,8 @@
 from flask import Flask, jsonify, request
+from ctypes import CDLL
+
+lib = CDLL("../c/lib_linked_list.so")
+lib.initList()
 
 app = Flask(__name__)
 
@@ -16,21 +20,36 @@ def get_list():
 def insert_element():
     try:
         data = request.json
+        value = data.get("value")
+        position = data.get("position")
 
-        if not isinstance(data.get("value"), (int, float)):
+        if not isinstance(value, (int, float)):
             raise TypeError("List elements must be integer or float")
-    
-        values.append(data.get("value"))
+
+        if position == "end":
+            lib.insertAtEnd(value)
+        elif position == "init":
+            lib.insertAtInit(value)
+        else:
+            raise ValueError("List element insertion must be at end or init")
+        lib.printLinkedList()
 
         return jsonify({
             "message": "element insert",
             "info": data
-            }), 201
+            }), 201           
+
     
-    except TypeError as e:
+    except (TypeError, ValueError) as e:
         return jsonify({
             "message": str(e)
-        })
+        }), 400
+
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": "Erro interno ao processar a requisição."
+        }), 500
 
     
 @app.route("/list/remove", methods=["DELETE"])
@@ -41,7 +60,8 @@ def remove_element():
             raise IndexError("List is empty")
 
         data = request.json
-        values.remove(data.get("value"))
+
+        lib.removeNodeList(data.get("value"))
 
         return jsonify({
             "message": "element removed",
@@ -57,8 +77,5 @@ def remove_element():
             "message": str(e)
         }), 400
     
-
-
-
 if __name__ == "__main__":
     app.run(debug=True)
